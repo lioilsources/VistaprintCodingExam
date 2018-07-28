@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
+/*
+ * Task: Calculate cart price. 
+ * Details: Cart consists of products and sales. Product has price and sale discount some product/s in cart.
+ * Sale1: Discount X% on every product in cart.
+ * Sale2: Discount Y% only product on next position in cart.
+ * Sale3: Discount only Zth product of specified type with -$S discount.
+ */
+
 namespace CodingExam
 {
     static class CollectionEx
@@ -17,8 +25,8 @@ namespace CodingExam
 
     class Cart 
     {
-        IList<IProduct> products = new List<IProduct>();
-        IList<ISale> sales = new List<ISale>();
+        readonly IList<IProduct> products = new List<IProduct>();
+        readonly IList<ISale> sales = new List<ISale>();
 
         int index = 0;
 
@@ -39,7 +47,6 @@ namespace CodingExam
             sales.Add(sale);
             sale.SetOrder(index++);
         }
-
     }
 
     interface ICartItem
@@ -58,6 +65,21 @@ namespace CodingExam
     {
         void AttachToProduct(IProduct[] products);
         decimal GetSale(decimal price);
+    }
+
+    class CartItem : ICartItem
+    {
+        int order;
+
+        public void SetOrder(int order)
+        {
+            this.order = order;
+        }
+
+        public int GetOrder()
+        {
+            return order;
+        }
     }
 
     class Product : CartItem, IProduct
@@ -86,27 +108,11 @@ namespace CodingExam
         public TShirt(decimal price) : base(price) { }
     }
 
-    class CartItem : ICartItem
-    {
-        int order;
-
-        public void SetOrder(int order)
-        {
-            this.order = order;
-        }
-
-        public int GetOrder()
-        {
-            return order;
-        }
-    }
-
     abstract class Sale : CartItem, ISale
     {
         public abstract void AttachToProduct(IProduct[] products);
         public abstract decimal GetSale(decimal price);
     }
-
 
     class Sale1 : Sale
     {
@@ -119,10 +125,7 @@ namespace CodingExam
 
         public override void AttachToProduct(IProduct[] products)
         {
-            foreach (var product in products)
-            {
-                product.AddSale(this);
-            }
+            products.Each(p => p.AddSale(this));
         }
 
         public override decimal GetSale(decimal price)
