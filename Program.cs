@@ -20,7 +20,7 @@ namespace CodingExam
         IList<IProduct> products = new List<IProduct>();
         IList<ISale> sales = new List<ISale>();
 
-        //int index = 0;
+        int index = 0;
 
         public decimal Calculate()
         {
@@ -31,31 +31,39 @@ namespace CodingExam
         public void AddProduct(IProduct product)
         {
             products.Add(product);
+            product.SetOrder(index++);
         }
 
         public void AddSale(ISale sale)
         {
             sales.Add(sale);
+            sale.SetOrder(index++);
         }
 
     }
 
-    interface IProduct 
+    interface ICartItem
+    {
+        void SetOrder(int order);
+        int GetOrder();
+    }
+
+    interface IProduct : ICartItem
     {
         decimal GetPrice();
         void AddSale(ISale sale);
     }
 
-    interface ISale 
+    interface ISale : ICartItem
     {
         void AttachToProduct(IProduct[] products);
         decimal GetSale(decimal price);
     }
 
-    class Product : IProduct
+    class Product : CartItem, IProduct
     {
-        decimal price;
-        IList<ISale> sales = new List<ISale>();
+        readonly decimal price;
+        readonly IList<ISale> sales = new List<ISale>();
 
         public Product(decimal price)
         {
@@ -73,16 +81,31 @@ namespace CodingExam
         }
     }
 
-    class Sale1 : ISale
+    class CartItem : ICartItem
     {
-        decimal percentSale;
+        int order;
+
+        public void SetOrder(int order)
+        {
+            this.order = order;
+        }
+
+        public int GetOrder()
+        {
+            return order;
+        }
+    }
+
+    class Sale1 : CartItem, ISale
+    {
+        protected decimal percentSale;
 
         public Sale1(decimal sale)
         {
             this.percentSale = sale;
         }
 
-        public void AttachToProduct(IProduct[] products)
+        public virtual void AttachToProduct(IProduct[] products)
         {
             foreach (var product in products)
             {
@@ -96,18 +119,32 @@ namespace CodingExam
         }
     }
 
+    class Sale2 : Sale1
+    {
+        public Sale2(decimal sale) : base(sale) { }
+
+        public override void AttachToProduct(IProduct[] products)
+        {
+            var product = products.Where(p => p.GetOrder() > GetOrder()).OrderBy(o => o).FirstOrDefault();
+            if (product != null)
+                product.AddSale(this);
+        }
+    }
+
     class MainClass
     {
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
             var cart = new Cart();
-            var sale1 = new Sale1(0.9m);
+            //var sale1 = new Sale1(0.9m);
+            var sale2 = new Sale2(0.5m);
             var tshirt = new Product(10);
 
             cart.AddProduct(tshirt);
+            cart.AddSale(sale2);
             cart.AddProduct(new Product(10));
-            cart.AddSale(sale1);
+            //cart.AddSale(sale1);
 
             Console.WriteLine($"End of World! ${cart.Calculate()}");
         }
