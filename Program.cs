@@ -81,6 +81,11 @@ namespace CodingExam
         }
     }
 
+    class TShirt : Product
+    {
+        public TShirt(decimal price) : base(price) { }
+    }
+
     class CartItem : ICartItem
     {
         int order;
@@ -96,7 +101,14 @@ namespace CodingExam
         }
     }
 
-    class Sale1 : CartItem, ISale
+    abstract class Sale : CartItem, ISale
+    {
+        public abstract void AttachToProduct(IProduct[] products);
+        public abstract decimal GetSale(decimal price);
+    }
+
+
+    class Sale1 : Sale
     {
         protected decimal percentSale;
 
@@ -105,7 +117,7 @@ namespace CodingExam
             this.percentSale = sale;
         }
 
-        public virtual void AttachToProduct(IProduct[] products)
+        public override void AttachToProduct(IProduct[] products)
         {
             foreach (var product in products)
             {
@@ -113,7 +125,7 @@ namespace CodingExam
             }
         }
 
-        public decimal GetSale(decimal price)
+        public override decimal GetSale(decimal price)
         {
             return price * percentSale;
         }
@@ -131,22 +143,49 @@ namespace CodingExam
         }
     }
 
+    class Sale3<T> : Sale
+        where T: IProduct
+    {
+        readonly int nth;
+        readonly decimal dolarSale;
+
+        public Sale3(int nth, decimal dolarSale)
+        {
+            this.nth = nth;
+            this.dolarSale = dolarSale;
+        }
+
+        public override void AttachToProduct(IProduct[] products)
+        {
+            var typedProducts = products.Where(p => typeof(T).IsAssignableFrom(p.GetType())).OrderBy(p => p.GetOrder());
+            if (typedProducts.Count() < nth)
+                return;
+            typedProducts.Skip(nth - 1).First().AddSale(this);
+        }
+
+        public override decimal GetSale(decimal price)
+        {
+            return price - Math.Min(price, dolarSale);
+        }
+    }
+
     class MainClass
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             var cart = new Cart();
             //var sale1 = new Sale1(0.9m);
-            var sale2 = new Sale2(0.5m);
-            var tshirt = new Product(10);
+            //var sale2 = new Sale2(0.5m);
+            var sale3 = new Sale3<TShirt>(1, 11);
+            var tshirt = new TShirt(10);
 
             cart.AddProduct(tshirt);
-            cart.AddSale(sale2);
+            //cart.AddSale(sale2);
             cart.AddProduct(new Product(10));
             //cart.AddSale(sale1);
+            cart.AddSale(sale3);
 
-            Console.WriteLine($"End of World! ${cart.Calculate()}");
+            Console.WriteLine($"Cart price: ${cart.Calculate()}");
         }
     }
 }
