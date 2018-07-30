@@ -1,4 +1,4 @@
-# VistaprintCodingExample
+# VistaprintCodingExam
 
 ## Goal
 Calculate cart price. 
