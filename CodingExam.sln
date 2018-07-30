@@ -1,7 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodingExam", "CodingExam.csproj", "{EF989068-76C7-4306-8744-57804B14305A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodingExam.Tests", "CodingExam.Tests\CodingExam.Tests.csproj", "{DB682F4B-401C-4307-887C-F7C81D1DE12C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodingExam.Classlib", "CodingExam.Classlib\CodingExam.Classlib.csproj", "{8CBDEB35-1F95-439A-A5A7-C4DF7290D88E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,9 +11,13 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EF989068-76C7-4306-8744-57804B14305A}.Debug|x86.ActiveCfg = Debug|x86
-		{EF989068-76C7-4306-8744-57804B14305A}.Debug|x86.Build.0 = Debug|x86
-		{EF989068-76C7-4306-8744-57804B14305A}.Release|x86.ActiveCfg = Release|x86
-		{EF989068-76C7-4306-8744-57804B14305A}.Release|x86.Build.0 = Release|x86
+		{DB682F4B-401C-4307-887C-F7C81D1DE12C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB682F4B-401C-4307-887C-F7C81D1DE12C}.Debug|x86.Build.0 = Debug|Any CPU
+		{DB682F4B-401C-4307-887C-F7C81D1DE12C}.Release|x86.ActiveCfg = Release|Any CPU
+		{DB682F4B-401C-4307-887C-F7C81D1DE12C}.Release|x86.Build.0 = Release|Any CPU
+		{8CBDEB35-1F95-439A-A5A7-C4DF7290D88E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8CBDEB35-1F95-439A-A5A7-C4DF7290D88E}.Debug|x86.Build.0 = Debug|Any CPU
+		{8CBDEB35-1F95-439A-A5A7-C4DF7290D88E}.Release|x86.ActiveCfg = Release|Any CPU
+		{8CBDEB35-1F95-439A-A5A7-C4DF7290D88E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
